@@ -61,6 +61,35 @@ app.post("/register", (request, response) => {
         });
 });
 
+app.post("/login", (request, response) => {
+    let id;
+    db.getUserByEmail(request.body.email)
+        .then((data) => {
+            if (data.rows.length === 1) {
+                id = data.rows[0].id;
+
+                return bcrypt.compare(
+                    request.body.password,
+                    data.rows[0].password
+                );
+            } else {
+                throw new Error("Wrong Username!");
+            }
+        })
+        .then((match) => {
+            if (match) {
+                request.session.userId = id;
+                response.sendStatus(200);
+            } else {
+                throw new Error("Wrong Password!");
+            }
+        })
+        .catch((error) => {
+            response.status(400).json({ message: error.message });
+            console.log(error.message);
+        });
+});
+
 app.get("*", function (request, response) {
     if (!request.session.userId) {
         response.redirect("/welcome");

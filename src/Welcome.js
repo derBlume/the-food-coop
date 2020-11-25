@@ -1,11 +1,19 @@
 import React from "react";
+import { HashRouter, Route } from "react-router-dom";
+
+import Login from "./Login";
 import Registration from "./Registration";
 
 export default function Welcome() {
     return (
-        <div>
+        <React.Fragment>
             <h1>Welcome to Social Network</h1>
-            <Registration />
-        </div>
+            <HashRouter>
+                <React.Fragment>
+                    <Route exact path="/" component={Registration} />
+                    <Route path="/login" component={Login} />
+                </React.Fragment>
+            </HashRouter>
+        </React.Fragment>
     );
 }

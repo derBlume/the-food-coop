@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 
 import axios from "./axios.js";
 
-export default class Registration extends React.Component {
+export default class Login extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            firstname: "",
-            lastname: "",
             email: "",
             password: "",
             error: false,
@@ -23,13 +21,14 @@ export default class Registration extends React.Component {
         e.preventDefault();
 
         axios
-            .post("/register", this.state)
+            .post("/login", this.state)
             .then(() => {
                 location.replace("/");
             })
-            .catch(() => {
+            .catch((error) => {
+                console.log(error.response.data);
                 this.setState({
-                    error: true,
+                    error: error.response.data.message,
                 });
             });
 
@@ -47,23 +46,9 @@ export default class Registration extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2>Register now</h2>
-                {this.state.error && <p>DIDNT WORK, TOO BAD, BYE.</p>}
+                <h2>Login</h2>
+                {this.state.error && <p>Wrong username or password.</p>}
                 <form onSubmit={this.handleSubmit}>
-                    <input
-                        type="text"
-                        name="firstname"
-                        placeholder="first name"
-                        onChange={this.handleChange}
-                        value={this.state.firstname}
-                    />
-                    <input
-                        type="text"
-                        name="lastname"
-                        placeholder="last name"
-                        onChange={this.handleChange}
-                        value={this.state.lastname}
-                    />
                     <input
                         type="email"
                         name="email"
@@ -74,13 +59,13 @@ export default class Registration extends React.Component {
                     <input
                         type="password"
                         name="password"
-                        placeholder="pasword"
+                        placeholder="password"
                         onChange={this.handleChange}
                         value={this.state.password}
                     />
-                    <button type="submit">Create Account</button>
+                    <button type="submit">Login</button>
                 </form>
-                <Link to="/login">Login</Link>
+                <Link to="/">Registration</Link>
             </React.Fragment>
         );
     }
