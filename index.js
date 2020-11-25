@@ -3,6 +3,8 @@ const compression = require("compression");
 const session = require("cookie-session");
 const bcrypt = require("bcryptjs");
 const csurf = require("csurf");
+const crypto = require("crypto-random-string");
+const sendEmail = require("./ses");
 
 const db = require("./db.js");
 const secrets = require("./secrets.json");
@@ -51,27 +53,25 @@ app.get("/welcome", (request, response) => {
 app.post("/register", (request, response) => {
     bcrypt
         .hash(request.body.password, 10)
-        .then((hashedPassword) => {
-            request.body.password = hashedPassword;
-            return db.addUser(request.body);
-        })
-        .then((data) => {
-            request.session.userId = data.rows[0].id;
+        .then((password) => db.addUser({ ...request.body, password }))
+        .then(({ rows }) => {
+            request.session.userId = rows[0].id;
             response.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            response.sendStatus(500);
         });
 });
 
 app.post("/login", (request, response) => {
     let id;
     db.getUserByEmail(request.body.email)
-        .then((data) => {
-            if (data.rows.length === 1) {
-                id = data.rows[0].id;
+        .then(({ rows }) => {
+            if (rows.length === 1) {
+                id = rows[0].id;
 
-                return bcrypt.compare(
-                    request.body.password,
-                    data.rows[0].password
-                );
+                return bcrypt.compare(request.body.password, rows[0].password);
             } else {
                 throw new Error("Wrong Username!");
             }
@@ -87,6 +87,58 @@ app.post("/login", (request, response) => {
         .catch((error) => {
             response.status(400).json({ message: error.message });
             console.log(error.message);
+        });
+});
+
+app.post("/reset/start", (request, response) => {
+    const { email } = request.body;
+    db.getUserByEmail(email).then(({ rows }) => {
+        if (rows.length === 1) {
+            crypto
+                .async({ length: 10, type: "url-safe" })
+                .then((reset_code) =>
+                    Promise.all([
+                        sendEmail(
+                            email,
+                            "Reset your Password",
+                            "Here is your secret code: " + reset_code
+                        ),
+                        db.addResetCode(reset_code, email),
+                    ])
+                )
+                .then(() => {
+                    response.sendStatus(200);
+                    console.log("SUCCESS SENDING MAIL & Saving reset code");
+                })
+                .catch((e) =>
+                    console.log("ERROR SENDING MAIL or Saving reset code", e)
+                );
+        } else {
+            console.log("user not found");
+            response.status(400).json({ message: "User not found" });
+        }
+    });
+});
+
+app.post("/reset/verify", (request, response) => {
+    const { reset_code, password, email } = request.body;
+    console.log(reset_code, password, email);
+    db.verifyResetCode(reset_code, email)
+        .then(({ rows }) => {
+            if (rows.length === 1) {
+                console.log("User found", rows[0]);
+                bcrypt
+                    .hash(password, 10)
+                    .then((password) => db.updatePassword(password, email))
+                    .then(() => response.sendStatus(200));
+            } else {
+                console.log("Email/Code not found");
+                response.status(400).json({ message: "Code not found" });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            response.status(500);
         });
 });
 
