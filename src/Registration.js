@@ -8,8 +8,8 @@ export default class Registration extends React.Component {
         super();
 
         this.state = {
-            firstname: "",
-            lastname: "",
+            first_name: "",
+            last_name: "",
             email: "",
             password: "",
             error: false,
@@ -37,8 +37,6 @@ export default class Registration extends React.Component {
     }
 
     handleChange(e) {
-        console.log("handleChange", e.target.name, e.target.value);
-
         this.setState({
             [e.target.name]: e.target.value,
         });
@@ -52,17 +50,17 @@ export default class Registration extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <input
                         type="text"
-                        name="firstname"
+                        name="first_name"
                         placeholder="first name"
                         onChange={this.handleChange}
-                        value={this.state.firstname}
+                        value={this.state.first_name}
                     />
                     <input
                         type="text"
-                        name="lastname"
+                        name="last_name"
                         placeholder="last name"
                         onChange={this.handleChange}
-                        value={this.state.lastname}
+                        value={this.state.last_name}
                     />
                     <input
                         type="email"
@@ -74,7 +72,7 @@ export default class Registration extends React.Component {
                     <input
                         type="password"
                         name="password"
-                        placeholder="pasword"
+                        placeholder="password"
                         onChange={this.handleChange}
                         value={this.state.password}
                     />

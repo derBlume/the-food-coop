@@ -8,13 +8,20 @@ const db = spicedPg(
 module.exports.addUser = function addUser({
     email,
     password,
-    firstname,
-    lastname,
+    first_name,
+    last_name,
 }) {
-    return db.query(
-        "INSERT INTO users (email, password, firstname, lastname) VALUES ($1, $2, $3, $4) RETURNING id",
-        [email, password, firstname, lastname]
-    );
+    return db
+        .query(
+            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id",
+            [email, password]
+        )
+        .then(({ rows }) =>
+            db.query(
+                "INSERT INTO profiles (user_id, first_name, last_name) VALUES ($1, $2, $3) RETURNING user_id",
+                [rows[0].id, first_name, last_name]
+            )
+        );
 };
 
 module.exports.getUserByEmail = function getUserByEmail(email) {
@@ -40,4 +47,18 @@ module.exports.updatePassword = function updatePassword(password, email) {
         password,
         email,
     ]);
+};
+
+module.exports.getProfileByUserId = function getProfileByUserId(user_id) {
+    return db.query("SELECT * FROM profiles WHERE user_id = $1", [user_id]);
+};
+
+module.exports.updateProfilePicture = function updateProfilePicture({
+    url,
+    user_id,
+}) {
+    return db.query(
+        "UPDATE profiles SET profile_picture = $1 WHERE user_id = $2 RETURNING profile_picture",
+        [url, user_id]
+    );
 };

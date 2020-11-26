@@ -6,6 +6,8 @@ const csurf = require("csurf");
 const crypto = require("crypto-random-string");
 const sendEmail = require("./ses");
 
+const s3 = require("./middlewares/s3.js");
+const uploader = require("./middlewares/uploader.js");
 const db = require("./db.js");
 const secrets = require("./secrets.json");
 
@@ -43,11 +45,33 @@ app.use((request, response, next) => {
 });
 
 app.get("/welcome", (request, response) => {
-    if (request.session.userId) {
+    if (request.session.user_id) {
         response.redirect("/");
     } else {
         response.sendFile(__dirname + "/index.html");
     }
+});
+
+app.get("/profile", (request, response) => {
+    db.getProfileByUserId(request.session.user_id)
+        .then(({ rows }) => response.json(rows[0]))
+        .catch((error) => {
+            console.log(error);
+            response.sendStatus(500);
+        });
+});
+
+app.post("/upload-image", uploader.single("file"), s3, (request, response) => {
+    console.log("post request to upload-image");
+    db.updateProfilePicture({ ...request.body, ...request.session })
+        .then((data) => {
+            console.log(data.rows[0]);
+            response.json(data.rows[0]);
+        })
+        .catch((error) => {
+            console.log(error);
+            response.sendStatus(500);
+        });
 });
 
 app.post("/register", (request, response) => {
@@ -55,7 +79,7 @@ app.post("/register", (request, response) => {
         .hash(request.body.password, 10)
         .then((password) => db.addUser({ ...request.body, password }))
         .then(({ rows }) => {
-            request.session.userId = rows[0].id;
+            request.session.user_id = rows[0].user_id;
             response.sendStatus(200);
         })
         .catch((error) => {
@@ -78,7 +102,7 @@ app.post("/login", (request, response) => {
         })
         .then((match) => {
             if (match) {
-                request.session.userId = id;
+                request.session.user_id = id;
                 response.sendStatus(200);
             } else {
                 throw new Error("Wrong Password!");
@@ -143,7 +167,7 @@ app.post("/reset/verify", (request, response) => {
 });
 
 app.get("*", function (request, response) {
-    if (!request.session.userId) {
+    if (!request.session.user_id) {
         response.redirect("/welcome");
     } else {
         response.sendFile(__dirname + "/index.html");

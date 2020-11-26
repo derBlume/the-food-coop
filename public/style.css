@@ -1,3 +1,17 @@
 body {
     background-color: cadetblue;
 }
+
+header {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+header img {
+    height: 100%;
+}
+
+header h1 {
+    white-space: nowrap;
+}
