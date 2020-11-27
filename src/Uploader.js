@@ -1,5 +1,4 @@
 import React from "react";
-import { updateProfilePicture } from "../db.js";
 
 import axios from "./axios.js";
 
@@ -33,7 +32,7 @@ export default class Uploader extends React.Component {
             .post("/upload-image", formData)
             .then((response) => {
                 console.log("upload succesful", response.data);
-                updateProfilePicture(response.data.profile_picture);
+                this.props.updateProfilePicture(response.data.profile_picture);
             })
             .catch(() => {
                 console.log("upload failed");
