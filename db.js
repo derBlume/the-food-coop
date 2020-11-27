@@ -62,3 +62,10 @@ module.exports.updateProfilePicture = function updateProfilePicture({
         [url, user_id]
     );
 };
+
+module.exports.updateProfileBio = function updateProfileBio({ bio, user_id }) {
+    return db.query(
+        "UPDATE profiles SET bio = $1 WHERE user_id = $2 RETURNING bio",
+        [bio, user_id]
+    );
+};

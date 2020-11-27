@@ -4,6 +4,7 @@ import axios from "./axios.js";
 
 import Logo from "./Logo.js";
 import ProfilePic from "./ProfilePic";
+import Profile from "./Profile";
 import Uploader from "./Uploader";
 
 export default class App extends React.Component {
@@ -15,11 +16,14 @@ export default class App extends React.Component {
             first_name: null,
             last_name: null,
             profile_picture: null,
+            bio: null,
 
             uploaderVisible: false,
         };
 
         this.toggleUploader = this.toggleUploader.bind(this);
+        this.updateProfilePicture = this.updateProfilePicture.bind(this);
+        this.updateBio = this.updateBio.bind(this);
     }
 
     componentDidMount() {
@@ -44,7 +48,14 @@ export default class App extends React.Component {
         });
     }
 
+    updateBio(newBio) {
+        this.setState({
+            bio: newBio,
+        });
+    }
+
     render() {
+        if (!this.state.user_id) return null; //!!!!!
         return (
             <React.Fragment>
                 <header>
@@ -56,12 +67,20 @@ export default class App extends React.Component {
                         toggleUploader={this.toggleUploader}
                     />
                 </header>
-                {this.state.first_name} {this.state.last_name} <br></br>
-                user_id: {this.state.user_id} <br></br>
-                profile_picture: {this.state.profile_picture}
+                <hr></hr>
+                <Profile
+                    profile_picture={this.state.profile_picture}
+                    first_name={this.state.first_name}
+                    last_name={this.state.last_name}
+                    bio={this.state.bio}
+                    toggleUploader={this.toggleUploader}
+                    updateBio={this.updateBio}
+                />
+
                 {this.state.uploaderVisible && (
                     <Uploader
                         updateProfilePicture={this.updateProfilePicture}
+                        toggleUploader={this.toggleUploader}
                     />
                 )}
             </React.Fragment>

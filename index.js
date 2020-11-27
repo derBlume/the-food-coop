@@ -62,12 +62,23 @@ app.get("/profile", (request, response) => {
 });
 
 app.post("/upload-image", uploader.single("file"), s3, (request, response) => {
-    console.log("post request to upload-image");
     db.updateProfilePicture({ ...request.body, ...request.session })
         .then((data) => {
-            console.log(data.rows[0]);
             response.json(data.rows[0]);
         })
+        .catch((error) => {
+            console.log(error);
+            response.sendStatus(500);
+        });
+});
+
+app.post("/update-profile-bio", (request, response) => {
+    console.log("POST request to /update-profile", {
+        ...request.body,
+        ...request.session,
+    });
+    db.updateProfileBio({ ...request.body, ...request.session })
+        .then(({ rows }) => response.json(rows[0]))
         .catch((error) => {
             console.log(error);
             response.sendStatus(500);

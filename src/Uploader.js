@@ -33,6 +33,7 @@ export default class Uploader extends React.Component {
             .then((response) => {
                 console.log("upload succesful", response.data);
                 this.props.updateProfilePicture(response.data.profile_picture);
+                this.props.toggleUploader;
             })
             .catch(() => {
                 console.log("upload failed");
@@ -51,6 +52,7 @@ export default class Uploader extends React.Component {
                     />
                     <button type="submit">Upload</button>
                 </form>
+                <p onClick={this.props.toggleUploader}>close</p>
             </div>
         );
     }

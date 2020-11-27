@@ -22,5 +22,6 @@ CREATE TABLE profiles(
     user_id INTEGER NOT NULL REFERENCES users(id),
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
+    bio VARCHAR,
     profile_picture VARCHAR
 )
