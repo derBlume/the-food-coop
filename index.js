@@ -7,6 +7,8 @@ const crypto = require("crypto-random-string");
 const sendEmail = require("./ses");
 
 const s3 = require("./middlewares/s3.js");
+const s0 = require("./middlewares/s0.js");
+
 const uploader = require("./middlewares/uploader.js");
 const db = require("./db.js");
 const secrets = require("./secrets.json");
@@ -16,6 +18,7 @@ const app = express();
 app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 
 app.use(
     session({
@@ -61,7 +64,26 @@ app.get("/profile", (request, response) => {
         });
 });
 
-app.post("/upload-image", uploader.single("file"), s3, (request, response) => {
+app.post(
+    "/upload-image",
+    uploader.single("file"),
+    s0,
+    async (request, response) => {
+        try {
+            const data = await db.updateProfilePicture({
+                ...request.body,
+                ...request.session,
+            });
+            //TODO: delete old file!!!
+            response.json(data.rows[0]);
+        } catch (error) {
+            console.log(error);
+            response.sendStatus(500);
+        }
+    }
+);
+
+/* app.post("/upload-image", uploader.single("file"), s0, (request, response) => {
     db.updateProfilePicture({ ...request.body, ...request.session })
         .then((data) => {
             response.json(data.rows[0]);
@@ -70,7 +92,7 @@ app.post("/upload-image", uploader.single("file"), s3, (request, response) => {
             console.log(error);
             response.sendStatus(500);
         });
-});
+}); */
 
 app.post("/update-profile-bio", (request, response) => {
     console.log("POST request to /update-profile", {
