@@ -1,10 +1,12 @@
 import React from "react";
+import { BrowserRouter, Route } from "react-router-dom";
 
 import axios from "./axios.js";
 
 import Logo from "./Logo.js";
 import ProfilePic from "./ProfilePic";
 import Profile from "./Profile";
+import OtherProfile from "./OtherProfile";
 import Uploader from "./Uploader";
 
 export default class App extends React.Component {
@@ -28,7 +30,7 @@ export default class App extends React.Component {
 
     componentDidMount() {
         axios
-            .get("/profile")
+            .get("/api/own-profile")
             .then(({ data }) => {
                 this.setState(data);
                 console.log(this.state);
@@ -68,14 +70,34 @@ export default class App extends React.Component {
                     />
                 </header>
                 <hr></hr>
-                <Profile
-                    profile_picture={this.state.profile_picture}
-                    first_name={this.state.first_name}
-                    last_name={this.state.last_name}
-                    bio={this.state.bio}
-                    toggleUploader={this.toggleUploader}
-                    updateBio={this.updateBio}
-                />
+                <BrowserRouter>
+                    <React.Fragment>
+                        <Route
+                            exact
+                            path="/"
+                            render={() => (
+                                <Profile
+                                    profile_picture={this.state.profile_picture}
+                                    first_name={this.state.first_name}
+                                    last_name={this.state.last_name}
+                                    bio={this.state.bio}
+                                    toggleUploader={this.toggleUploader}
+                                    updateBio={this.updateBio}
+                                />
+                            )}
+                        />
+                        <Route
+                            path="/profile/:id"
+                            render={(props) => (
+                                <OtherProfile
+                                    key={props.match.url}
+                                    match={props.match}
+                                    history={props.history}
+                                />
+                            )}
+                        />
+                    </React.Fragment>
+                </BrowserRouter>
 
                 {this.state.uploaderVisible && (
                     <Uploader

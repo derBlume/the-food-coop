@@ -23,7 +23,7 @@ export default class Registration extends React.Component {
         e.preventDefault();
 
         axios
-            .post("/register", this.state)
+            .post("/api/register", this.state)
             .then(() => {
                 location.replace("/");
             })

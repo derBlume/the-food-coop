@@ -29,7 +29,7 @@ export default class Uploader extends React.Component {
         formData.append("file", this.state.image);
 
         axios
-            .post("/upload-image", formData)
+            .post("/api/upload-image", formData)
             .then((response) => {
                 console.log("upload succesful", response.data);
                 this.props.updateProfilePicture(response.data.profile_picture);

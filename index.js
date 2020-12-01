@@ -55,7 +55,7 @@ app.get("/welcome", (request, response) => {
     }
 });
 
-app.get("/profile", (request, response) => {
+app.get("/api/own-profile", (request, response) => {
     db.getProfileByUserId(request.session.user_id)
         .then(({ rows }) => response.json(rows[0]))
         .catch((error) => {
@@ -64,8 +64,40 @@ app.get("/profile", (request, response) => {
         });
 });
 
+app.get("/api/profile/:id", (request, response) => {
+    if (!request.session.user_id) {
+        return response.sendStatus(401);
+    } else if (request.params.id == request.session.user_id) {
+        return response.sendStatus(403);
+    } else {
+        console.log(request.params.id);
+        db.getProfileByUserId(request.params.id)
+            .then(({ rows }) => {
+                console.log(rows[0]);
+                if (rows.length === 1) {
+                    return response.json(rows[0]);
+                } else {
+                    return response.sendStatus(404);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                response.sendStatus(500);
+            });
+    }
+
+    // TODO: lookup that user in db,
+    // send back user information
+
+    /*     if (request.params.id == 12) {
+        response.json({ id: 12, firstname: "Julian" });
+    } else {
+        response.sendStatus(404);
+    } */
+});
+
 app.post(
-    "/upload-image",
+    "/api/upload-image",
     uploader.single("file"),
     s0,
     async (request, response) => {
@@ -83,7 +115,7 @@ app.post(
     }
 );
 
-/* app.post("/upload-image", uploader.single("file"), s0, (request, response) => {
+/* app.post("/api/upload-image", uploader.single("file"), s0, (request, response) => {
     db.updateProfilePicture({ ...request.body, ...request.session })
         .then((data) => {
             response.json(data.rows[0]);
@@ -94,7 +126,7 @@ app.post(
         });
 }); */
 
-app.post("/update-profile-bio", (request, response) => {
+app.post("/api/update-profile-bio", (request, response) => {
     console.log("POST request to /update-profile", {
         ...request.body,
         ...request.session,
@@ -107,7 +139,7 @@ app.post("/update-profile-bio", (request, response) => {
         });
 });
 
-app.post("/register", (request, response) => {
+app.post("/api/register", (request, response) => {
     bcrypt
         .hash(request.body.password, 10)
         .then((password) => db.addUser({ ...request.body, password }))
@@ -121,7 +153,7 @@ app.post("/register", (request, response) => {
         });
 });
 
-app.post("/login", (request, response) => {
+app.post("/api/login", (request, response) => {
     let id;
     db.getUserByEmail(request.body.email)
         .then(({ rows }) => {
@@ -147,7 +179,7 @@ app.post("/login", (request, response) => {
         });
 });
 
-app.post("/reset/start", (request, response) => {
+app.post("/api/reset/start", (request, response) => {
     const { email } = request.body;
     db.getUserByEmail(email).then(({ rows }) => {
         if (rows.length === 1) {
@@ -177,7 +209,7 @@ app.post("/reset/start", (request, response) => {
     });
 });
 
-app.post("/reset/verify", (request, response) => {
+app.post("/api/reset/verify", (request, response) => {
     const { reset_code, password, email } = request.body;
     console.log(reset_code, password, email);
     db.verifyResetCode(reset_code, email)

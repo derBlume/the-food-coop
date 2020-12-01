@@ -21,7 +21,7 @@ export default class Login extends React.Component {
         e.preventDefault();
 
         axios
-            .post("/login", this.state)
+            .post("/api/login", this.state)
             .then(() => {
                 location.replace("/");
             })

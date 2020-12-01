@@ -36,7 +36,7 @@ export default class BioEditor extends React.Component {
         e.preventDefault();
 
         axios
-            .post("/update-profile-bio", this.state)
+            .post("/api/update-profile-bio", this.state)
             .then(() => {
                 this.props.updateBio(this.state.bio);
                 this.toggleEditor();
@@ -56,11 +56,19 @@ export default class BioEditor extends React.Component {
                 return (
                     <p>
                         {this.props.bio}{" "}
-                        <span onClick={this.toggleEditor}>Edit</span>
+                        <span className="edit-link" onClick={this.toggleEditor}>
+                            Edit
+                        </span>
                     </p>
                 );
             } else {
-                return <p onClick={this.toggleEditor}>Add a bio now!</p>;
+                return (
+                    <p>
+                        <span className="edit-link" onClick={this.toggleEditor}>
+                            Add a bio now!
+                        </span>
+                    </p>
+                );
             }
         } else {
             return (
@@ -78,10 +86,6 @@ export default class BioEditor extends React.Component {
                     {this.state.error && <p>Something Went wrong, sorry.</p>}
                 </React.Fragment>
             );
-            // TODO: render textarea
-            // TODO: textarea should have current bio as initial value
-            // TODO: when user submits form, save new bio to database by doing a POST request to server
-            // TODO: switch back to non-editing mode
         }
     }
 }
