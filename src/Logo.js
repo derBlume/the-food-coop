@@ -1,10 +1,17 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Logo() {
     return (
         <React.Fragment>
-            <img src="/logo.svg" alt="Logo" />
-            <h1>The Food Coop</h1>
+            <div className="logo">
+                <Link to="/">
+                    <img src="/logo.svg" alt="Logo" />
+                </Link>
+                <div>
+                    FOOD<br></br>COOP
+                </div>
+            </div>
         </React.Fragment>
     );
 }

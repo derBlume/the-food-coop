@@ -47,6 +47,7 @@ test("Clicking the Add button causes a textarea and a Save button to be rendered
 });
 
 test("Clicking the submit-button causes an ajax request.", async () => {
+    axios.post.mockClear();
     const { container } = render(<BioEditor bio="mock-bio-text" />);
     await waitForElement(() => container.querySelector(".edit-link"));
     fireEvent.click(container.querySelector(".edit-link"));
@@ -63,7 +64,8 @@ test("When the mock request is successful, the function that was passed as a pro
     );
     await waitForElement(() => container.querySelector(".edit-link"));
     fireEvent.click(container.querySelector(".edit-link"));
-    fireEvent.click(container.querySelector("[type=submit]"));
-    console.log(updateBio.mock.calls);
+    fireEvent.submit(container.querySelector("form"));
+    await waitForElement(() => container.querySelector(".edit-link"));
+
     expect(updateBio.mock.calls.length).toBe(1);
 });

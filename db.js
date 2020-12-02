@@ -5,6 +5,7 @@ const db = spicedPg(
         "postgres:patrick:postgres@localhost:5432/socialnetwork"
 );
 
+//USERS TABLE ------------------------
 module.exports.addUser = function addUser({
     email,
     password,
@@ -28,6 +29,14 @@ module.exports.getUserByEmail = function getUserByEmail(email) {
     return db.query("SELECT * FROM users WHERE email = $1", [email]);
 };
 
+module.exports.updatePassword = function updatePassword(password, email) {
+    return db.query("UPDATE users SET password = $1 WHERE email = $2", [
+        password,
+        email,
+    ]);
+};
+
+//RESET_CODES TABLE --------------------
 module.exports.addResetCode = function addResetCode(reset_code, email) {
     return db.query(
         "INSERT INTO reset_codes (reset_code, email) VALUES ($1, $2)",
@@ -42,13 +51,7 @@ module.exports.verifyResetCode = function verifyCode(reset_code, email) {
     );
 };
 
-module.exports.updatePassword = function updatePassword(password, email) {
-    return db.query("UPDATE users SET password = $1 WHERE email = $2", [
-        password,
-        email,
-    ]);
-};
-
+//PROFILES TABLE ------------------------
 module.exports.getProfileByUserId = function getProfileByUserId(user_id) {
     return db.query("SELECT * FROM profiles WHERE user_id = $1", [user_id]);
 };
@@ -67,5 +70,12 @@ module.exports.updateProfileBio = function updateProfileBio({ bio, user_id }) {
     return db.query(
         "UPDATE profiles SET bio = $1 WHERE user_id = $2 RETURNING bio",
         [bio, user_id]
+    );
+};
+
+module.exports.getProfilesByQuery = function getProfilesByQuery(query) {
+    return db.query(
+        "SELECT * FROM profiles WHERE first_name ILIKE $1 OR last_name ILIKE $1 ORDER BY created_at DESC",
+        [query + "%"]
     );
 };

@@ -85,15 +85,14 @@ app.get("/api/profile/:id", (request, response) => {
                 response.sendStatus(500);
             });
     }
+});
 
-    // TODO: lookup that user in db,
-    // send back user information
-
-    /*     if (request.params.id == 12) {
-        response.json({ id: 12, firstname: "Julian" });
-    } else {
-        response.sendStatus(404);
-    } */
+app.get("/api/profiles/", (request, response) => {
+    console.log(request.query);
+    db.getProfilesByQuery(request.query.query).then(({ rows }) => {
+        console.log(rows.length);
+        response.json(rows);
+    });
 });
 
 app.post(
@@ -115,17 +114,6 @@ app.post(
     }
 );
 
-/* app.post("/api/upload-image", uploader.single("file"), s0, (request, response) => {
-    db.updateProfilePicture({ ...request.body, ...request.session })
-        .then((data) => {
-            response.json(data.rows[0]);
-        })
-        .catch((error) => {
-            console.log(error);
-            response.sendStatus(500);
-        });
-}); */
-
 app.post("/api/update-profile-bio", (request, response) => {
     console.log("POST request to /update-profile", {
         ...request.body,
@@ -144,6 +132,7 @@ app.post("/api/register", (request, response) => {
         .hash(request.body.password, 10)
         .then((password) => db.addUser({ ...request.body, password }))
         .then(({ rows }) => {
+            console.log(rows[0]);
             request.session.user_id = rows[0].user_id;
             response.sendStatus(200);
         })

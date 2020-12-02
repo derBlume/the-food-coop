@@ -39,6 +39,7 @@ export default class BioEditor extends React.Component {
             .post("/api/update-profile-bio", this.state)
             .then(() => {
                 this.props.updateBio(this.state.bio);
+
                 this.toggleEditor();
             })
             .catch(() => {

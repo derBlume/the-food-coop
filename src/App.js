@@ -1,13 +1,14 @@
 import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 
-import axios from "./axios.js";
+import axios from "./axios";
 
-import Logo from "./Logo.js";
+import Logo from "./Logo";
 import ProfilePic from "./ProfilePic";
 import Profile from "./Profile";
 import OtherProfile from "./OtherProfile";
 import Uploader from "./Uploader";
+import FindPeople from "./FindPeople";
 
 export default class App extends React.Component {
     constructor() {
@@ -57,21 +58,24 @@ export default class App extends React.Component {
     }
 
     render() {
-        if (!this.state.user_id) return null; //!!!!!
+        if (!this.state.user_id) return null;
         return (
             <React.Fragment>
-                <header>
-                    {/* <div className="logo"> */}
-                    <Logo />
-                    {/* </div> */}
-                    <ProfilePic
-                        profile_picture={this.state.profile_picture}
-                        toggleUploader={this.toggleUploader}
-                    />
-                </header>
-                <hr></hr>
                 <BrowserRouter>
                     <React.Fragment>
+                        <header>
+                            <Logo />
+                            <Link to="/profiles">Find People</Link>
+                            <Link to="/">
+                                <img src={this.state.profile_picture}></img>
+                            </Link>
+
+                            {/* <ProfilePic
+                                profile_picture={this.state.profile_picture}
+                                toggleUploader={this.toggleUploader}
+                            /> */}
+                        </header>
+                        <hr></hr>
                         <Route
                             exact
                             path="/"
@@ -90,6 +94,16 @@ export default class App extends React.Component {
                             path="/profile/:id"
                             render={(props) => (
                                 <OtherProfile
+                                    key={props.match.url}
+                                    match={props.match}
+                                    history={props.history}
+                                />
+                            )}
+                        />
+                        <Route
+                            path="/profiles"
+                            render={(props) => (
+                                <FindPeople
                                     key={props.match.url}
                                     match={props.match}
                                     history={props.history}
