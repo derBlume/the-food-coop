@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 import axios from "./axios";
 
 import Logo from "./Logo";
-import ProfilePic from "./ProfilePic";
+//import ProfilePic from "./ProfilePic";
 import Profile from "./Profile";
 import OtherProfile from "./OtherProfile";
 import Uploader from "./Uploader";

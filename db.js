@@ -19,14 +19,17 @@ module.exports.addUser = function addUser({
         )
         .then(({ rows }) =>
             db.query(
-                "INSERT INTO profiles (user_id, first_name, last_name) VALUES ($1, $2, $3) RETURNING user_id",
+                "INSERT INTO profiles (user_id, first_name, last_name) VALUES ($1, $2, $3) RETURNING user_id, id AS profile_id",
                 [rows[0].id, first_name, last_name]
             )
         );
 };
 
 module.exports.getUserByEmail = function getUserByEmail(email) {
-    return db.query("SELECT * FROM users WHERE email = $1", [email]);
+    return db.query(
+        "SELECT users.id AS user_id, users.password AS password, profiles.id AS profile_id FROM users JOIN profiles ON users.id = profiles.user_id WHERE email = $1",
+        [email]
+    );
 };
 
 module.exports.updatePassword = function updatePassword(password, email) {
@@ -77,5 +80,43 @@ module.exports.getProfilesByQuery = function getProfilesByQuery(query) {
     return db.query(
         "SELECT * FROM profiles WHERE first_name ILIKE $1 OR last_name ILIKE $1 ORDER BY created_at DESC",
         [query + "%"]
+    );
+};
+
+//FRIENDSHIPS TABLE: ---------------------------
+module.exports.getFriendship = function getFriendship({ own_id, other_id }) {
+    return db.query(
+        "SELECT * FROM friendships WHERE (recipient_id = $1 AND sender_id = $2) OR (recipient_id = $2 AND sender_id = $1);",
+        [own_id, other_id]
+    );
+};
+
+module.exports.requestFriendship = function requestFriendship({
+    own_id,
+    other_id,
+}) {
+    return db.query(
+        "INSERT INTO friendships (sender_id, recipient_id) VALUES ($1, $2)",
+        [own_id, other_id]
+    );
+};
+
+module.exports.acceptFriendship = function acceptFriendship({
+    own_id,
+    other_id,
+}) {
+    return db.query(
+        "UPDATE friendships SET accepted = true WHERE recipient_id = $1 AND sender_id = $2",
+        [own_id, other_id]
+    );
+};
+
+module.exports.cancelFriendship = function cancelFriendship({
+    own_id,
+    other_id,
+}) {
+    return db.query(
+        "DELETE FROM friendships WHERE (recipient_id = $1 AND sender_id = $2) OR (recipient_id = $2 AND sender_id = $1);",
+        [own_id, other_id]
     );
 };

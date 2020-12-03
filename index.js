@@ -6,7 +6,7 @@ const csurf = require("csurf");
 const crypto = require("crypto-random-string");
 const sendEmail = require("./ses");
 
-const s3 = require("./middlewares/s3.js");
+//const s3 = require("./middlewares/s3.js");
 const s0 = require("./middlewares/s0.js");
 
 const uploader = require("./middlewares/uploader.js");
@@ -73,7 +73,6 @@ app.get("/api/profile/:id", (request, response) => {
         console.log(request.params.id);
         db.getProfileByUserId(request.params.id)
             .then(({ rows }) => {
-                console.log(rows[0]);
                 if (rows.length === 1) {
                     return response.json(rows[0]);
                 } else {
@@ -88,11 +87,59 @@ app.get("/api/profile/:id", (request, response) => {
 });
 
 app.get("/api/profiles/", (request, response) => {
-    console.log(request.query);
     db.getProfilesByQuery(request.query.query).then(({ rows }) => {
-        console.log(rows.length);
         response.json(rows);
     });
+});
+
+app.get("/api/friendship/:other_id", async (request, response) => {
+    const own_id = request.session.profile_id;
+    const other_id = request.params.other_id;
+    try {
+        const { rows } = await db.getFriendship({ own_id, other_id });
+
+        if (rows.length === 1 && rows[0].accepted === true) {
+            console.log("friendship established");
+            response.json("UNFRIEND");
+        } else if (rows.length === 1 && rows[0].accepted === false) {
+            if (rows[0].sender_id === own_id) {
+                console.log("pending, waiting for other party to accept");
+                response.json("CANCEL FRIEND REQUEST");
+            } else {
+                console.log("pending, do you want to accept?");
+                response.json("ACCEPT FRIEND REQUEST");
+            }
+        } else {
+            console.log("no friendship");
+            response.json("SEND FRIEND REQUEST");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+app.post("/api/request-friendship/:other_id", async (request, response) => {
+    const own_id = request.session.profile_id;
+    const other_id = request.params.other_id;
+    await db.requestFriendship({ own_id, other_id });
+    console.log("Friendship requested");
+    response.json("CANCEL FRIEND REQUEST");
+});
+
+app.post("/api/accept-friendship/:other_id", async (request, response) => {
+    const own_id = request.session.profile_id;
+    const other_id = request.params.other_id;
+    await db.acceptFriendship({ own_id, other_id });
+    console.log("Friendship accepted");
+    response.json("UNFRIEND");
+});
+
+app.post("/api/cancel-friendship/:other_id", async (request, response) => {
+    const own_id = request.session.profile_id;
+    const other_id = request.params.other_id;
+    await db.cancelFriendship({ own_id, other_id });
+    console.log("Friendship cancelled");
+    response.json("SEND FRIEND REQUEST");
 });
 
 app.post(
@@ -132,8 +179,8 @@ app.post("/api/register", (request, response) => {
         .hash(request.body.password, 10)
         .then((password) => db.addUser({ ...request.body, password }))
         .then(({ rows }) => {
-            console.log(rows[0]);
             request.session.user_id = rows[0].user_id;
+            request.session.profile_id = rows[0].profile_id;
             response.sendStatus(200);
         })
         .catch((error) => {
@@ -143,11 +190,13 @@ app.post("/api/register", (request, response) => {
 });
 
 app.post("/api/login", (request, response) => {
-    let id;
+    let user_id;
+    let profile_id;
     db.getUserByEmail(request.body.email)
         .then(({ rows }) => {
             if (rows.length === 1) {
-                id = rows[0].id;
+                user_id = rows[0].user_id;
+                profile_id = rows[0].profile_id;
 
                 return bcrypt.compare(request.body.password, rows[0].password);
             } else {
@@ -156,7 +205,8 @@ app.post("/api/login", (request, response) => {
         })
         .then((match) => {
             if (match) {
-                request.session.user_id = id;
+                request.session.user_id = user_id;
+                request.session.profile_id = profile_id;
                 response.sendStatus(200);
             } else {
                 throw new Error("Wrong Password!");
