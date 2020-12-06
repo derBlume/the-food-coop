@@ -9,6 +9,7 @@ import Profile from "./Profile";
 import OtherProfile from "./OtherProfile";
 import Uploader from "./Uploader";
 import FindPeople from "./FindPeople";
+import Friends from "./Friends";
 
 export default class App extends React.Component {
     constructor() {
@@ -34,7 +35,6 @@ export default class App extends React.Component {
             .get("/api/own-profile")
             .then(({ data }) => {
                 this.setState(data);
-                console.log(this.state);
             })
             .catch((error) => console.log(error));
     }
@@ -66,6 +66,7 @@ export default class App extends React.Component {
                         <header>
                             <Logo />
                             <Link to="/profiles">Find People</Link>
+                            <Link to="/friendships">My Friends</Link>
                             <Link to="/">
                                 <img src={this.state.profile_picture}></img>
                             </Link>
@@ -110,6 +111,7 @@ export default class App extends React.Component {
                                 />
                             )}
                         />
+                        <Route path="/friendships" render={() => <Friends />} />
                     </React.Fragment>
                 </BrowserRouter>
 

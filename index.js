@@ -12,6 +12,7 @@ const s0 = require("./middlewares/s0.js");
 const uploader = require("./middlewares/uploader.js");
 const db = require("./db.js");
 const secrets = require("./secrets.json");
+const { async } = require("crypto-random-string");
 
 const app = express();
 
@@ -116,6 +117,12 @@ app.get("/api/friendship/:other_id", async (request, response) => {
     } catch (error) {
         console.log(error);
     }
+});
+
+app.get("/api/friendships", async (request, response) => {
+    const { rows } = await db.getFriendships(request.session.profile_id);
+    console.log(rows);
+    response.json(rows);
 });
 
 app.post("/api/request-friendship/:other_id", async (request, response) => {

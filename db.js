@@ -91,6 +91,23 @@ module.exports.getFriendship = function getFriendship({ own_id, other_id }) {
     );
 };
 
+module.exports.getFriendships = function getFriendships(own_id) {
+    return db.query(
+        `SELECT * FROM friendships 
+        JOIN profiles 
+          ON (sender_id=profiles.id 
+              AND recipient_id=$1
+              AND accepted=false) 
+            OR (sender_id=profiles.id 
+                AND recipient_id=$1      
+                AND accepted=true)  
+            OR (sender_id=$1      
+                AND recipient_id=profiles.id 
+                AND accepted=true);`,
+        [own_id]
+    );
+};
+
 module.exports.requestFriendship = function requestFriendship({
     own_id,
     other_id,
