@@ -12,7 +12,6 @@ const s0 = require("./middlewares/s0.js");
 const uploader = require("./middlewares/uploader.js");
 const db = require("./db.js");
 const secrets = require("./secrets.json");
-const { async } = require("crypto-random-string");
 
 const app = express();
 
