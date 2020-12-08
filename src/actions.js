@@ -23,3 +23,17 @@ export async function cancelFriendship(id) {
         id,
     };
 }
+
+export async function setChatMessages(chatMessages) {
+    return {
+        type: "CHAT_MESSAGES",
+        chatMessages,
+    };
+}
+
+export async function setChatMessage(chatMessage) {
+    return {
+        type: "CHAT_MESSAGE",
+        chatMessage,
+    };
+}

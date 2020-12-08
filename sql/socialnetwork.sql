@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS chat;
 DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS reset_codes;
 DROP TABLE IF EXISTS profiles;
@@ -33,4 +34,11 @@ CREATE TABLE friendships(
    sender_id INTEGER REFERENCES profiles(id) NOT NULL,
    recipient_id INTEGER REFERENCES profiles(id) NOT NULL,
    accepted BOOLEAN DEFAULT false
+ );
+
+ CREATE TABLE chat_messages(
+     id SERIAL PRIMARY KEY,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     message VARCHAR NOT NULL,
+     profile_id INTEGER REFERENCES profiles(id) NOT NULL
  );

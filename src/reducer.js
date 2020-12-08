@@ -1,4 +1,9 @@
-export default function (state = {}, action) {
+export default function (
+    state = {
+        chatMessages: [],
+    },
+    action
+) {
     if (action.type === "GET_FRIENDSHIPS") {
         state = { ...state, friendships: action.friendships };
     } else if (action.type === "ACCEPT_FRIENDSHIP") {
@@ -18,6 +23,16 @@ export default function (state = {}, action) {
             friendships: state.friendships.filter(
                 (friendship) => friendship.id !== action.id
             ),
+        };
+    } else if (action.type === "CHAT_MESSAGES") {
+        state = {
+            ...state,
+            chatMessages: action.chatMessages.reverse(),
+        };
+    } else if (action.type === "CHAT_MESSAGE") {
+        state = {
+            ...state,
+            chatMessages: [...state.chatMessages, ...action.chatMessage],
         };
     }
 

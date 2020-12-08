@@ -137,3 +137,34 @@ module.exports.cancelFriendship = function cancelFriendship({
         [own_id, other_id]
     );
 };
+
+// CHAT_MESSAGES TABLE: ------------------------------
+module.exports.getChatMessages = function getChatMessages(limit) {
+    return db.query(
+        `SELECT 
+            chat_messages.id AS id,
+            chat_messages.created_at AS created_at,
+            chat_messages.message AS message,
+            profiles.first_name AS first_name,
+            profiles.last_name AS last_name
+        FROM chat_messages JOIN profiles ON chat_messages.profile_id = profiles.id
+        ORDER BY chat_messages.created_at DESC
+        LIMIT $1;`,
+        [limit]
+    );
+};
+
+module.exports.addChatMessage = function addChatMessage({
+    message,
+    profile_id,
+}) {
+    return db.query(
+        `INSERT INTO chat_messages (message, profile_id) VALUES ($1, $2)
+            RETURNING chat_messages.id AS id, 
+                created_at,
+                message, 
+                (SELECT first_name FROM profiles WHERE id=$2 LIMIT 1),
+                (SELECT last_name FROM profiles WHERE id=$2 LIMIT 1)`,
+        [message, profile_id]
+    );
+};

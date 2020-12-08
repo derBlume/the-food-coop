@@ -10,6 +10,7 @@ import OtherProfile from "./OtherProfile";
 import Uploader from "./Uploader";
 import FindPeople from "./FindPeople";
 import Friends from "./Friends";
+import Chat from "./Chat";
 
 export default class App extends React.Component {
     constructor() {
@@ -65,6 +66,7 @@ export default class App extends React.Component {
                     <React.Fragment>
                         <header>
                             <Logo />
+                            <Link to="/chat">Chat</Link>
                             <Link to="/profiles">Find People</Link>
                             <Link to="/friendships">My Friends</Link>
                             <Link to="/">
@@ -111,7 +113,8 @@ export default class App extends React.Component {
                                 />
                             )}
                         />
-                        <Route path="/friendships" render={() => <Friends />} />
+                        <Route path="/friendships" component={Friends} />
+                        <Route path="/chat" component={Chat} />
                     </React.Fragment>
                 </BrowserRouter>
 
