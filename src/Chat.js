@@ -8,8 +8,6 @@ export default function Chat() {
     const [draft, setDraft] = useState("");
 
     useEffect(() => {
-        console.log("OH LOOK A NEW CHAT MESSAGE, lets scroll to the bottom...");
-
         chatContainer.current.scrollTop = chatContainer.current.scrollHeight;
     }, [chatMessages]);
 
@@ -17,7 +15,6 @@ export default function Chat() {
         event.preventDefault();
         socket.emit("sendChatMessage", draft);
         setDraft("");
-        console.log("submit ", draft);
     }
 
     return (

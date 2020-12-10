@@ -69,10 +69,16 @@ module.exports.updateProfilePicture = function updateProfilePicture({
     );
 };
 
-module.exports.updateProfileBio = function updateProfileBio({ bio, user_id }) {
+module.exports.updateProfile = function updateProfile({
+    key,
+    value,
+    profile_id,
+}) {
+    if (!["bio", "first_name", "last_name"].includes(key)) return;
+
     return db.query(
-        "UPDATE profiles SET bio = $1 WHERE user_id = $2 RETURNING bio",
-        [bio, user_id]
+        `UPDATE profiles SET ${key} = $1 WHERE id = $2 RETURNING ${key}`,
+        [value, profile_id]
     );
 };
 

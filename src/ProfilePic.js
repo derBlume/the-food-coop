@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
-export default function ProfilePic(props) {
-    const img = props.profile_picture
-        ? props.profile_picture
-        : "/defaultProfilePic.svg";
-    // TODO: use props.profilePic to render actual profile picture,
-    // also you want to have a default image, if user has not set a profile pic yet.
+import Uploader from "./Uploader";
+
+export default function ProfilePic() {
+    const profile_picture = useSelector(
+        (store) => store.profile.profile_picture
+    );
+    const [uploaderVisible, setUploaderVisible] = useState(false);
+
+    const img = profile_picture ? profile_picture : "/defaultProfilePic.svg";
+
+    function toggleUploader() {
+        setUploaderVisible(!uploaderVisible);
+    }
+
     return (
         <div className="profilePic">
-            <img
-                onClick={props.toggleUploader}
-                src={img}
-                alt="Profile Picture"
-            ></img>
+            <img onClick={toggleUploader} src={img} alt="Profile Picture"></img>
+            {uploaderVisible && <Uploader toggleUploader={toggleUploader} />}
         </div>
     );
 }

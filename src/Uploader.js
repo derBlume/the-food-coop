@@ -1,59 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateProfilePicture } from "./actions.js";
 
-import axios from "./axios.js";
+export default function Uploader(props) {
+    const [file, setFile] = useState(null);
 
-export default class Uploader extends React.Component {
-    constructor() {
-        super();
+    const dispatch = useDispatch();
 
-        this.state = {
-            image: null,
-        };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+    function handleChange(e) {
+        setFile(e.target.files[0]);
     }
 
-    handleChange(e) {
-        this.setState({
-            [e.target.name]: e.target.files[0],
-        });
-    }
-
-    handleSubmit(e) {
+    function handleSubmit(e) {
         e.preventDefault();
         console.log("submitting");
 
         const formData = new FormData();
 
-        formData.append("file", this.state.image);
-
-        axios
-            .post("/api/upload-image", formData)
-            .then((response) => {
-                console.log("upload succesful", response.data);
-                this.props.updateProfilePicture(response.data.profile_picture);
-                this.props.toggleUploader;
-            })
-            .catch(() => {
-                console.log("upload failed");
-            });
+        formData.append("file", file);
+        dispatch(updateProfilePicture(formData));
     }
 
-    render() {
-        return (
-            <div className="modal">
-                <form onSubmit={this.handleSubmit}>
-                    <input
-                        type="file"
-                        name="image"
-                        accept="image/*"
-                        onChange={this.handleChange}
-                    />
-                    <button type="submit">Upload</button>
-                </form>
-                <p onClick={this.props.toggleUploader}>close</p>
-            </div>
-        );
-    }
+    return (
+        <div className="modal">
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                />
+                <button type="submit">Upload</button>
+            </form>
+            <p onClick={props.toggleUploader}>close</p>
+        </div>
+    );
 }

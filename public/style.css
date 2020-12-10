@@ -114,3 +114,10 @@ header img {
     max-height: 400px;
     overflow-y: auto;
 }
+
+/* STUFF */
+
+.modal {
+    position: absolute;
+    top: 150px;
+}

@@ -1,10 +1,15 @@
 export default function (
     state = {
         chatMessages: [],
+        profile: {},
     },
     action
 ) {
-    if (action.type === "GET_FRIENDSHIPS") {
+    if (action.type === "GET_OWN_PROFILE") {
+        state = { ...state, profile: action.profile };
+    } else if (action.type === "SET_OWN_PROFILE") {
+        state = { ...state, profile: { ...state.profile, ...action.property } };
+    } else if (action.type === "GET_FRIENDSHIPS") {
         state = { ...state, friendships: action.friendships };
     } else if (action.type === "ACCEPT_FRIENDSHIP") {
         state = {

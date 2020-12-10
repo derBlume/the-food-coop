@@ -1,5 +1,30 @@
 import axios from "./axios";
 
+export async function getOwnProfile() {
+    const { data } = await axios.get("/api/own-profile");
+    return {
+        type: "GET_OWN_PROFILE",
+        profile: data,
+    };
+}
+
+export async function updateOwnProfile(key, value) {
+    await axios.post("/api/update-profile", { key, value });
+    return {
+        type: "SET_OWN_PROFILE",
+        property: { [key]: value },
+    };
+}
+
+export async function updateProfilePicture(formData) {
+    const { data } = await axios.post("/api/upload-profile-picture", formData);
+
+    return {
+        type: "SET_OWN_PROFILE",
+        property: { profile_picture: data.profile_picture },
+    };
+}
+
 export async function getFriendships() {
     const { data } = await axios.get(`/api/friendships`);
     return {

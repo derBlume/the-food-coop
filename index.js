@@ -63,6 +63,12 @@ app.get("/welcome", (request, response) => {
     }
 });
 
+app.post("/logout", (request, response) => {
+    request.session.user_id = null;
+    request.session.profile_id = null;
+    response.redirect("/welcome");
+});
+
 app.get("/api/own-profile", (request, response) => {
     db.getProfileByUserId(request.session.user_id)
         .then(({ rows }) => response.json(rows[0]))
@@ -78,7 +84,6 @@ app.get("/api/profile/:id", (request, response) => {
     } else if (request.params.id == request.session.user_id) {
         return response.sendStatus(403);
     } else {
-        console.log(request.params.id);
         db.getProfileByUserId(request.params.id)
             .then(({ rows }) => {
                 if (rows.length === 1) {
@@ -128,7 +133,7 @@ app.get("/api/friendship/:other_id", async (request, response) => {
 
 app.get("/api/friendships", async (request, response) => {
     const { rows } = await db.getFriendships(request.session.profile_id);
-    console.log(rows);
+
     response.json(rows);
 });
 
@@ -157,7 +162,7 @@ app.post("/api/cancel-friendship/:other_id", async (request, response) => {
 });
 
 app.post(
-    "/api/upload-image",
+    "/api/upload-profile-picture",
     uploader.single("file"),
     s0,
     async (request, response) => {
@@ -175,12 +180,8 @@ app.post(
     }
 );
 
-app.post("/api/update-profile-bio", (request, response) => {
-    console.log("POST request to /update-profile", {
-        ...request.body,
-        ...request.session,
-    });
-    db.updateProfileBio({ ...request.body, ...request.session })
+app.post("/api/update-profile", (request, response) => {
+    db.updateProfile({ ...request.body, ...request.session })
         .then(({ rows }) => response.json(rows[0]))
         .catch((error) => {
             console.log(error);

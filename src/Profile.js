@@ -1,30 +1,21 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import BioEditor from "./BioEditor.js";
 import ProfilePic from "./ProfilePic";
 
-export default class Profile extends React.Component {
-    constructor() {
-        super();
+export default function Profile() {
+    const profile = useSelector((store) => store.profile);
 
-        this.state = {};
-    }
-
-    render() {
-        return (
+    return (
+        <React.Fragment>
             <div className="profile">
                 <h1>
-                    {this.props.first_name} {this.props.last_name}
+                    {profile.first_name} {profile.last_name}
                 </h1>
-                <ProfilePic
-                    profile_picture={this.props.profile_picture}
-                    toggleUploader={this.props.toggleUploader}
-                />
-                <BioEditor
-                    bio={this.props.bio}
-                    updateBio={this.props.updateBio}
-                />
+                <ProfilePic />
+                <BioEditor />
             </div>
-        );
-    }
+        </React.Fragment>
+    );
 }
