@@ -3,15 +3,14 @@ import { Link } from "react-router-dom";
 
 export default function Logo() {
     return (
-        <React.Fragment>
-            <div className="logo">
+        <div className="logo">
+            <div className="logo-text">
                 <Link to="/">
-                    <img src="/logo.svg" alt="Logo" />
+                    <span className="the">THE</span>
+                    <br></br>FOOD<br></br>COOP
                 </Link>
-                <div>
-                    FOOD<br></br>COOP
-                </div>
             </div>
-        </React.Fragment>
+            {/* <img src="/logo.svg" alt="Logo" /> */}
+        </div>
     );
 }

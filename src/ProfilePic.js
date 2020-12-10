@@ -7,10 +7,12 @@ export default function ProfilePic(props) {
     // TODO: use props.profilePic to render actual profile picture,
     // also you want to have a default image, if user has not set a profile pic yet.
     return (
-        <img
-            onClick={props.toggleUploader}
-            src={img}
-            alt="Profile Picture"
-        ></img>
+        <div className="profilePic">
+            <img
+                onClick={props.toggleUploader}
+                src={img}
+                alt="Profile Picture"
+            ></img>
+        </div>
     );
 }

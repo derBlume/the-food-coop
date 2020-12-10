@@ -66,11 +66,11 @@ export default class App extends React.Component {
                     <React.Fragment>
                         <header>
                             <Logo />
-                            <Link to="/chat">Chat</Link>
-                            <Link to="/profiles">Find People</Link>
-                            <Link to="/friendships">My Friends</Link>
+
                             <Link to="/">
-                                <img src={this.state.profile_picture}></img>
+                                <div className="me">
+                                    <img src={this.state.profile_picture}></img>
+                                </div>
                             </Link>
 
                             {/* <ProfilePic
@@ -78,43 +78,52 @@ export default class App extends React.Component {
                                 toggleUploader={this.toggleUploader}
                             /> */}
                         </header>
-                        <hr></hr>
-                        <Route
-                            exact
-                            path="/"
-                            render={() => (
-                                <Profile
-                                    profile_picture={this.state.profile_picture}
-                                    first_name={this.state.first_name}
-                                    last_name={this.state.last_name}
-                                    bio={this.state.bio}
-                                    toggleUploader={this.toggleUploader}
-                                    updateBio={this.updateBio}
-                                />
-                            )}
-                        />
-                        <Route
-                            path="/profile/:id"
-                            render={(props) => (
-                                <OtherProfile
-                                    key={props.match.url}
-                                    match={props.match}
-                                    history={props.history}
-                                />
-                            )}
-                        />
-                        <Route
-                            path="/profiles"
-                            render={(props) => (
-                                <FindPeople
-                                    key={props.match.url}
-                                    match={props.match}
-                                    history={props.history}
-                                />
-                            )}
-                        />
-                        <Route path="/friendships" component={Friends} />
-                        <Route path="/chat" component={Chat} />
+
+                        <main>
+                            <Route
+                                exact
+                                path="/"
+                                render={() => (
+                                    <Profile
+                                        profile_picture={
+                                            this.state.profile_picture
+                                        }
+                                        first_name={this.state.first_name}
+                                        last_name={this.state.last_name}
+                                        bio={this.state.bio}
+                                        toggleUploader={this.toggleUploader}
+                                        updateBio={this.updateBio}
+                                    />
+                                )}
+                            />
+                            <Route
+                                path="/profile/:id"
+                                render={(props) => (
+                                    <OtherProfile
+                                        key={props.match.url}
+                                        match={props.match}
+                                        history={props.history}
+                                    />
+                                )}
+                            />
+                            <Route
+                                path="/profiles"
+                                render={(props) => (
+                                    <FindPeople
+                                        key={props.match.url}
+                                        match={props.match}
+                                        history={props.history}
+                                    />
+                                )}
+                            />
+                            <Route path="/friendships" component={Friends} />
+                            <Route path="/chat" component={Chat} />
+                        </main>
+                        <footer>
+                            <Link to="/chat">Chat</Link>
+                            <Link to="/profiles">Find People</Link>
+                            <Link to="/friendships">My Friends</Link>
+                        </footer>
                     </React.Fragment>
                 </BrowserRouter>
 

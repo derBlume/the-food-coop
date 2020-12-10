@@ -1,26 +1,109 @@
+:root {
+    --main-bg-color: rgb(173, 221, 189);
+    --border-header-footer: 2px solid black;
+    --header-height: 60px;
+    --footer-heigt: 30px;
+    --main-elm-padding: 5px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background-color: cadetblue;
+    background-color: var(--main-bg-color);
+}
+
+/* HEADER & FOOTER BASIC SETUP--------------------------------- */
+header,
+footer {
+    position: fixed;
+    width: 100%;
+    background-color: var(--main-bg-color);
+    z-index: 1;
+    display: flex;
+    border-radius: 5px;
+    padding: var(--main-elm-padding);
 }
 
 header {
-    height: 50px;
-    display: flex;
+    top: 0;
+    height: var(--header-height);
+    border-bottom: var(--border-header-footer);
     justify-content: space-between;
 }
 
+footer {
+    bottom: 0;
+    height: var(--footer-heigt);
+    border-top: var(--border-header-footer);
+    justify-content: space-evenly;
+}
+
+main {
+    position: fixed;
+    top: var(--header-height);
+    bottom: var(--footer-heigt);
+    padding: var(--main-elm-padding);
+    overflow: scroll;
+}
+
+/* HEADER CONTENT ------------------------ */
 .logo {
     display: flex;
+    align-items: center;
 }
 
 header img {
     height: 50px;
 }
 
-header h1 {
+.logo .logo-text {
     white-space: nowrap;
     font-family: monospace;
+    font-size: xx-large;
+    line-height: 0.7;
+    padding: 0 10px 0 0;
+    overflow: hidden;
 }
 
+.logo .logo-text a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.logo .logo-text .the {
+    font-size: small;
+}
+
+.me {
+    height: 50px;
+    width: 50px;
+    border: 2px black solid;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.me img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+/* FOOTER CONTENT --------------------------------- */
+
+/* MAIN CONTENT --------------------------------- */
+
+/* ------- OWN PROFILE PAGE */
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ------- CHAT */
 .chat-message {
     margin: 20px;
     padding: 20px;
@@ -28,6 +111,6 @@ header h1 {
 }
 
 .chat-container {
-    max-height: 500px;
+    max-height: 400px;
     overflow-y: auto;
 }

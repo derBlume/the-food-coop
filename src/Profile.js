@@ -16,13 +16,13 @@ export default class Profile extends React.Component {
                 <h1>
                     {this.props.first_name} {this.props.last_name}
                 </h1>
-                <BioEditor
-                    bio={this.props.bio}
-                    updateBio={this.props.updateBio}
-                />
                 <ProfilePic
                     profile_picture={this.props.profile_picture}
                     toggleUploader={this.props.toggleUploader}
+                />
+                <BioEditor
+                    bio={this.props.bio}
+                    updateBio={this.props.updateBio}
                 />
             </div>
         );

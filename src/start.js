@@ -29,4 +29,4 @@ if (location.pathname === "/welcome") {
     );
 }
 
-ReactDOM.render(component, document.querySelector("main"));
+ReactDOM.render(component, document.querySelector("#app"));
