@@ -46,8 +46,9 @@ export default class Login extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2>Login</h2>
-                {this.state.error && <p>Wrong username or password.</p>}
+                <div className="error">
+                    {this.state.error && <p>Wrong username or password.</p>}
+                </div>
                 <form onSubmit={this.handleSubmit}>
                     <input
                         type="email"

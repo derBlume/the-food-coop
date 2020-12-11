@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOwnProfile } from "./actions.js";
+import { Link } from "react-router-dom";
 
 export default function BioEditor() {
     const dispatch = useDispatch();
@@ -13,7 +14,8 @@ export default function BioEditor() {
         setDraft(event.target.value);
     }
 
-    function toggleEditor() {
+    function toggleEditor(e) {
+        e.preventDefault();
         setEditing(!editing);
     }
 
@@ -28,27 +30,25 @@ export default function BioEditor() {
             return (
                 <p>
                     {bio}{" "}
-                    <span className="edit-link" onClick={toggleEditor}>
-                        Edit
-                    </span>
+                    <Link to="" onClick={toggleEditor}>
+                        edit
+                    </Link>
                 </p>
             );
         } else {
             return (
                 <p>
-                    <span className="edit-link" onClick={toggleEditor}>
+                    <Link to="" onClick={toggleEditor}>
                         Add a bio now!
-                    </span>
+                    </Link>
                 </p>
             );
         }
     } else {
         return (
             <React.Fragment>
-                <p>I am the editor</p>
                 <form onSubmit={handleSubmit}>
-                    <input
-                        type="textarea"
+                    <textarea
                         name="bio"
                         value={draft}
                         onChange={handleChange}

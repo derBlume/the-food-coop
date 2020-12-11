@@ -63,7 +63,7 @@ export default class ResetPassword extends React.Component {
         if (this.state.step === 1) {
             return (
                 <React.Fragment>
-                    <h1>Give us your E-Mail to refresh your memory</h1>
+                    <p>Please enter the email you signed up with:</p>
                     {this.state.error}
                     <form onSubmit={this.handleSubmitStart}>
                         <input

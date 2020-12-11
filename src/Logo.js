@@ -7,7 +7,8 @@ export default function Logo() {
             <div className="logo-text">
                 <Link to="/">
                     <span className="the">THE</span>
-                    <br></br>FOOD<br></br>COOP
+                    <br></br>F<span className="oo">🍏🍅</span>D<br></br>C
+                    <span className="oo">🍑🧅</span>P{/* 🍏🍎🍑🍅🧅🥗🥝🥬🍓 */}
                 </Link>
             </div>
             {/* <img src="/logo.svg" alt="Logo" /> */}

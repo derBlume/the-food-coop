@@ -16,9 +16,9 @@ export default function ProfilePic() {
     }
 
     return (
-        <div className="profilePic">
+        <React.Fragment>
             <img onClick={toggleUploader} src={img} alt="Profile Picture"></img>
             {uploaderVisible && <Uploader toggleUploader={toggleUploader} />}
-        </div>
+        </React.Fragment>
     );
 }

@@ -45,8 +45,9 @@ export default class Registration extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2>Register now</h2>
-                {this.state.error && <p>DIDNT WORK, TOO BAD, BYE.</p>}
+                <div className="error">
+                    {this.state.error && <p>Something went wrong.</p>}
+                </div>
                 <form onSubmit={this.handleSubmit}>
                     <input
                         type="text"

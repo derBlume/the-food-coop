@@ -40,13 +40,16 @@ export default class OtherProfile extends React.Component {
 
     render() {
         return (
-            <div className="other-profile">
-                {this.state.error && <p>{this.state.error}</p>}
+            <div className="profile">
                 <h1>
                     {this.state.first_name} {this.state.last_name}
                 </h1>
-                <p>{this.state.bio}</p>
-                <img src={this.state.profile_picture}></img>
+                <div className="profilePic">
+                    <img src={this.state.profile_picture}></img>
+                </div>
+                <div className="bio">
+                    <p>{this.state.bio}</p>
+                </div>
                 <FriendBtn id={this.props.match.params.id} />
             </div>
         );

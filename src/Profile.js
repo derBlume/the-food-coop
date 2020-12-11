@@ -8,14 +8,16 @@ export default function Profile() {
     const profile = useSelector((store) => store.profile);
 
     return (
-        <React.Fragment>
-            <div className="profile">
-                <h1>
-                    {profile.first_name} {profile.last_name}
-                </h1>
+        <div className="profile">
+            <h1>
+                {profile.first_name} {profile.last_name}
+            </h1>
+            <div className="profilePic">
                 <ProfilePic />
+            </div>
+            <div className="bio">
                 <BioEditor />
             </div>
-        </React.Fragment>
+        </div>
     );
 }

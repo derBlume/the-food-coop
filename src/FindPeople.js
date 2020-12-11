@@ -25,7 +25,7 @@ export default function FindPeople() {
         };
     }, [query]);
     return (
-        <React.Fragment>
+        <div className="find-people">
             <input
                 type="text"
                 name="query"
@@ -34,19 +34,21 @@ export default function FindPeople() {
             />
 
             {
-                <ul>
+                <div className="results">
                     {results.map((profile) => (
-                        <li key={profile.id}>
-                            <strong>
+                        <div className="result" key={profile.id}>
+                            <div className="me">
+                                <img src={profile.profile_picture} />
+                            </div>
+                            <div className="name">
                                 <Link to={"/profile/" + profile.id}>
                                     {profile.first_name} {profile.last_name}
                                 </Link>
-                            </strong>{" "}
-                            {profile.bio}
-                        </li>
+                            </div>
+                        </div>
                     ))}
-                </ul>
+                </div>
             }
-        </React.Fragment>
+        </div>
     );
 }
